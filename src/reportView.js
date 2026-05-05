@@ -97,16 +97,16 @@ export function renderReportHtml(data) {
     }
 
     :root {
-      --desk: #070d12;
-      --sheet-bg: #0d151d;
-      --text: #e6edf5;
-      --muted: #9fb0c2;
-      --accent: #00d9b6;
-      --accent-soft: #14b8a6;
-      --border: #1f2d3b;
-      --pill-bg: #122230;
-      --warn-bg: #2a1f0f;
-      --warn-text: #ffd9a3;
+      --desk: #c5ccd6;
+      --sheet-bg: #fff;
+      --text: #1a1f26;
+      --muted: #5c6570;
+      --accent: #1a5f8a;
+      --accent-soft: #1a5f8a;
+      --border: #cfd6de;
+      --pill-bg: #e8eef4;
+      --warn-bg: #fff4e5;
+      --warn-text: #7a4a12;
     }
 
     * { box-sizing: border-box; }
@@ -124,7 +124,7 @@ export function renderReportHtml(data) {
       max-width: 210mm;
       margin: 0 auto 1.25rem;
       padding: 0 12px;
-      color: var(--text);
+      color: #2a3140;
     }
 
     .page-head h1 {
@@ -168,12 +168,12 @@ export function renderReportHtml(data) {
       margin: 0;
       font-size: 1.6rem;
       font-weight: 750;
-      color: var(--text);
+      color: #172236;
     }
 
     .cover-subtitle {
       margin: 0.45rem 0 0;
-      color: var(--muted);
+      color: #4b5563;
       font-size: 0.94rem;
     }
 
@@ -182,7 +182,7 @@ export function renderReportHtml(data) {
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1rem 1.1rem;
-      background: #0f1a24;
+      background: #fafcff;
       display: grid;
       grid-template-columns: 12rem 1fr;
       gap: 0.5rem 0.85rem;
@@ -197,15 +197,15 @@ export function renderReportHtml(data) {
 
     .cover-meta dd {
       margin: 0;
-      color: var(--text);
+      color: #111827;
       font-weight: 500;
     }
 
     .cover-foot {
       margin-top: 2rem;
-      border-top: 1px dashed #2b3f52;
+      border-top: 1px dashed #cbd5e1;
       padding-top: 0.7rem;
-      color: var(--muted);
+      color: #64748b;
       font-size: 0.84rem;
     }
 
@@ -218,7 +218,7 @@ export function renderReportHtml(data) {
       font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--accent-soft);
+      color: var(--muted);
       font-weight: 700;
     }
 
@@ -238,8 +238,8 @@ export function renderReportHtml(data) {
       text-align: center;
       font-size: 0.86rem;
       font-weight: 650;
-      color: var(--text);
-      background: #10202d;
+      color: #1f2937;
+      background: #f8fafc;
     }
 
     /* Hoja A4 en pantalla: 210 × 297 mm */
@@ -251,9 +251,9 @@ export function renderReportHtml(data) {
       color: var(--text);
       padding: 16mm 18mm;
       box-shadow:
-        0 1px 3px rgba(0,0,0,0.35),
-        0 8px 28px rgba(0,0,0,0.5);
-      border: 1px solid var(--border);
+        0 1px 3px rgba(0,0,0,0.08),
+        0 8px 28px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
     }
 
     .card {
@@ -282,9 +282,8 @@ export function renderReportHtml(data) {
     .badge {
       font-size: 0.8rem;
       font-weight: 700;
-      color: #04241f;
-      background: var(--accent);
-      border: 1px solid #2df5da;
+      color: var(--accent);
+      background: var(--pill-bg);
       padding: 0.2rem 0.5rem;
       border-radius: 4px;
       letter-spacing: 0.02em;
@@ -309,7 +308,7 @@ export function renderReportHtml(data) {
     .grid code {
       font-size: 0.78rem;
       word-break: break-all;
-      color: #9ad9ff;
+      color: #334155;
     }
 
     .pill {
@@ -318,8 +317,6 @@ export function renderReportHtml(data) {
       padding: 0.08rem 0.4rem;
       border-radius: 3px;
       background: var(--pill-bg);
-      color: #8df5e3;
-      border: 1px solid #1f4a5f;
       font-size: 0.82rem;
       font-weight: 500;
     }
@@ -339,7 +336,7 @@ export function renderReportHtml(data) {
 
     .prose {
       font-size: 0.9rem;
-      color: #d4deea;
+      color: #2d3748;
       white-space: normal;
     }
 
