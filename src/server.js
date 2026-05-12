@@ -14,7 +14,8 @@ app.get("/health", (_req, res) => {
 
 /**
  * GET /api/casos/consolidados
- * Query: page, limit, status, companyId, sort, botId (mismos que el gateway de correos)
+ * Query: page, limit, companyId, sort, botId (mismos que el gateway de correos).
+ * Se consultan en paralelo OPEN, PENDING y RESOLVED; la respuesta unifica tickets.
  */
 app.get("/api/casos/consolidados", async (req, res) => {
   try {
@@ -29,7 +30,7 @@ app.get("/api/casos/consolidados", async (req, res) => {
 
 /**
  * GET /vista/casos
- * Misma query que /api/casos/consolidados; devuelve HTML listo para compartir el enlace.
+ * Misma query que /api/casos/consolidados (sin filtro por status); HTML listo para compartir.
  */
 app.get("/vista/casos", async (req, res) => {
   try {

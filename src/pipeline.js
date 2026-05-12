@@ -1,5 +1,8 @@
 import { fetchDatabaseRowsByTicket, fetchEmailReport } from "./jelouClient.js";
 
+/** Estados que se consultan en paralelo al gateway de correos. */
+export const EMAIL_REPORT_STATUSES = ["OPEN", "PENDING", "RESOLVED"];
+
 /**
  * Toma el primer resultado por supportTicketId (orden del array original).
  * @param {any[]} results
@@ -19,12 +22,29 @@ export function firstBySupportTicketId(results) {
 }
 
 /**
+ * @param {Record<string, unknown>} row
+ */
+function companyFromDbRow(row) {
+  if (!row || typeof row !== "object") return "";
+  const raw =
+    row.Compañia ??
+    row.Compañía ??
+    row.Company ??
+    row.company ??
+    row.Empresa ??
+    row.empresa ??
+    row.Compania ??
+    "";
+  if (raw == null) return "";
+  return typeof raw === "string" ? raw : String(raw);
+}
+
+/**
  * @param {any} elemento Primer elemento del grupo
  */
 export function mapToTicketSummary(elemento) {
   const st = elemento.supportTicket ?? {};
   const assigned = st.assignedTo;
-  console.log(assigned);
   const user = st.user;
   const assignedEmail =
     typeof assigned === "object" && assigned && "names" in assigned
@@ -48,20 +68,30 @@ export function mapToTicketSummary(elemento) {
  * @param {Record<string, string | undefined>} query
  */
 export async function runEnrichmentPipeline(config, query) {
-  const report = await fetchEmailReport(
-    {
-      page: query.page,
-      limit: query.limit,
-      status: query.status,
-      companyId: query.companyId,
-      sort: query.sort,
-      botId: query.botId,
-    },
-    config
+  const baseOpts = {
+    page: query.page,
+    limit: query.limit,
+    companyId: query.companyId,
+    sort: query.sort,
+    botId: query.botId,
+  };
+
+  const reports = await Promise.all(
+    EMAIL_REPORT_STATUSES.map((status) =>
+      fetchEmailReport({ ...baseOpts, status }, config)
+    )
   );
 
-  const results = Array.isArray(report.results) ? report.results : [];
-  const byTicket = firstBySupportTicketId(results);
+  /** Último resultado gana si hubiera duplicado de supportTicketId entre listas. */
+  const byTicket = new Map();
+  for (const report of reports) {
+    const results = Array.isArray(report.results) ? report.results : [];
+    for (const item of results) {
+      const id = item.supportTicketId;
+      if (id == null) continue;
+      byTicket.set(String(id), item);
+    }
+  }
 
   const entries = [...byTicket.entries()];
   const merged = await Promise.all(
@@ -71,6 +101,7 @@ export async function runEnrichmentPipeline(config, query) {
 
       let resumen = "";
       let resolucion = "";
+      let company = "";
 
       if (ticketNum != null) {
         try {
@@ -80,6 +111,7 @@ export async function runEnrichmentPipeline(config, query) {
           if (first) {
             resumen = first.Resumen_de_Caso ?? "";
             resolucion = first.Resolucion ?? "";
+            company = companyFromDbRow(first);
           }
         } catch (e) {
           base._databaseError =
@@ -91,6 +123,7 @@ export async function runEnrichmentPipeline(config, query) {
         supportTicketId,
         {
           ...base,
+          company,
           Resumen_de_Caso: resumen,
           Resolucion: resolucion,
         },
@@ -101,7 +134,12 @@ export async function runEnrichmentPipeline(config, query) {
   const out = Object.fromEntries(merged);
 
   return {
-    sourcePagination: report.pagination ?? null,
+    sourcePagination: {
+      mergedFromStatuses: [...EMAIL_REPORT_STATUSES],
+      byStatus: Object.fromEntries(
+        EMAIL_REPORT_STATUSES.map((st, i) => [st, reports[i].pagination ?? null])
+      ),
+    },
     tickets: out,
   };
 }

@@ -9,11 +9,15 @@ export async function fetchEmailReport(opts, config) {
   const {
     page = 1,
     limit = 50,
-    status = "PENDING",
+    status,
     companyId,
     sort = "ASC",
     botId,
   } = opts;
+
+  if (status == null || String(status).trim() === "") {
+    throw new Error("fetchEmailReport: status es obligatorio");
+  }
 
   const params = new URLSearchParams({
     page: String(page),

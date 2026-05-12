@@ -23,6 +23,13 @@ function generateReportId() {
   return `RPT-${stamp}-${random}`;
 }
 
+/** @param {string} status */
+function statusSlug(status) {
+  const s = String(status || "").trim().toUpperCase();
+  if (s === "OPEN" || s === "PENDING" || s === "RESOLVED") return s.toLowerCase();
+  return "unknown";
+}
+
 /**
  * @param {{ sourcePagination?: object | null, tickets: Record<string, object> }} data
  */
@@ -37,27 +44,53 @@ export function renderReportHtml(data) {
   const reportId = generateReportId();
   const totalCases = entries.length;
   const ticketNumbersHtml = entries
-    .map(([, t]) => `<li>${escapeHtml(t.ticket ?? "—")}</li>`)
+    .map(([, t]) => {
+      const st = statusSlug(t.status);
+      return `<li class="ticket-chip ticket-chip--${st}">${escapeHtml(
+        t.ticket ?? "—"
+      )}</li>`;
+    })
     .join("");
 
-  const paginationBlock =
-    pagination != null
-      ? `<p class="meta">Página ${escapeHtml(pagination.page)} · ${escapeHtml(
-          entries.length
-        )} ticket(s) en esta vista · Total en origen: ${escapeHtml(
-          pagination.total
-        )}</p>`
-      : "";
+  const paginationBlock = (() => {
+    if (pagination == null) return "";
+    const byStatus =
+      pagination.byStatus && typeof pagination.byStatus === "object"
+        ? pagination.byStatus
+        : null;
+    if (byStatus) {
+      const lines = ["OPEN", "PENDING", "RESOLVED"].map((st) => {
+        const p = byStatus[st];
+        if (!p || typeof p !== "object") {
+          return `<span><strong>${escapeHtml(st)}</strong>: —</span>`;
+        }
+        return `<span><strong>${escapeHtml(st)}</strong>: pág. ${escapeHtml(
+          p.page
+        )} · total origen ${escapeHtml(p.total)}</span>`;
+      });
+      return `<p class="meta meta-stack">${lines.join(
+        "<br>\n"
+      )}<br>${escapeHtml(
+        String(entries.length)
+      )} ticket(s) únicos consolidados (OPEN + PENDING + RESOLVED).</p>`;
+    }
+    return `<p class="meta">Página ${escapeHtml(pagination.page)} · ${escapeHtml(
+      String(entries.length)
+    )} ticket(s) en esta vista · Total en origen: ${escapeHtml(
+      pagination.total
+    )}</p>`;
+  })();
 
   const cards = entries
     .map(([supportTicketId, t]) => {
+      const st = statusSlug(t.status);
       const err =
         t._databaseError != null
           ? `<p class="warn">${nl2br(String(t._databaseError))}</p>`
           : "";
 
       return `
-      <div class="sheet" id="ticket-${escapeHtml(supportTicketId)}">
+      <div class="sheet sheet--${st}" id="ticket-${escapeHtml(supportTicketId)}">
         <article class="card">
           <header class="card-head">
             <span class="badge">#${escapeHtml(t.ticket ?? "—")}</span>
@@ -65,7 +98,8 @@ export function renderReportHtml(data) {
           </header>
           <dl class="grid">
             <dt>ID soporte</dt><dd><code>${escapeHtml(supportTicketId)}</code></dd>
-            <dt>Estado</dt><dd><span class="pill">${escapeHtml(t.status || "—")}</span></dd>
+            <dt>Estado</dt><dd><span class="pill pill--${st}">${escapeHtml(t.status || "—")}</span></dd>
+            <dt>Compañía</dt><dd>${escapeHtml(t.company || "—")}</dd>
             <dt>Asignado a</dt><dd>${escapeHtml(t.assignedTo || "—")}</dd>
             <dt>Usuario</dt><dd>${escapeHtml(t.usuario || "—")}</dd>
             <dt>Creado</dt><dd>${escapeHtml(t.createdAt || "—")}</dd>
@@ -107,6 +141,14 @@ export function renderReportHtml(data) {
       --pill-bg: #e8eef4;
       --warn-bg: #fff4e5;
       --warn-text: #7a4a12;
+      --st-open: #0369a1;
+      --st-open-soft: #e0f2fe;
+      --st-pending: #b45309;
+      --st-pending-soft: #fef3c7;
+      --st-resolved: #166534;
+      --st-resolved-soft: #dcfce7;
+      --st-unknown: #475569;
+      --st-unknown-soft: #f1f5f9;
     }
 
     * { box-sizing: border-box; }
@@ -137,6 +179,10 @@ export function renderReportHtml(data) {
       margin: 0;
       color: var(--muted);
       font-size: 0.88rem;
+    }
+
+    .meta-stack {
+      line-height: 1.55;
     }
 
     .list {
@@ -231,15 +277,38 @@ export function renderReportHtml(data) {
       gap: 0.45rem;
     }
 
-    .ticket-list li {
-      border: 1px solid var(--border);
+    .ticket-list .ticket-chip {
       border-radius: 6px;
       padding: 0.35rem 0.5rem;
       text-align: center;
       font-size: 0.86rem;
       font-weight: 650;
-      color: #1f2937;
-      background: #f8fafc;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .ticket-chip--open {
+      border-color: #7dd3fc;
+      background: var(--st-open-soft);
+      color: var(--st-open);
+    }
+
+    .ticket-chip--pending {
+      border-color: #fcd34d;
+      background: var(--st-pending-soft);
+      color: var(--st-pending);
+    }
+
+    .ticket-chip--resolved {
+      border-color: #86efac;
+      background: var(--st-resolved-soft);
+      color: var(--st-resolved);
+    }
+
+    .ticket-chip--unknown {
+      border-color: #cbd5e1;
+      background: var(--st-unknown-soft);
+      color: var(--st-unknown);
     }
 
     /* Hoja A4 en pantalla: 210 × 297 mm */
@@ -254,6 +323,50 @@ export function renderReportHtml(data) {
         0 1px 3px rgba(0,0,0,0.08),
         0 8px 28px rgba(0,0,0,0.12);
       border: 1px solid rgba(0,0,0,0.06);
+      border-left-width: 6px;
+      border-left-color: var(--st-unknown-soft);
+    }
+
+    .sheet--open {
+      border-left-color: var(--st-open);
+      background: linear-gradient(
+        90deg,
+        var(--st-open-soft) 0,
+        #fff 18mm
+      );
+    }
+
+    .sheet--pending {
+      border-left-color: var(--st-pending);
+      background: linear-gradient(
+        90deg,
+        var(--st-pending-soft) 0,
+        #fff 18mm
+      );
+    }
+
+    .sheet--resolved {
+      border-left-color: var(--st-resolved);
+      background: linear-gradient(
+        90deg,
+        var(--st-resolved-soft) 0,
+        #fff 18mm
+      );
+    }
+
+    .sheet--unknown {
+      border-left-color: var(--st-unknown);
+      background: linear-gradient(
+        90deg,
+        var(--st-unknown-soft) 0,
+        #fff 18mm
+      );
+    }
+
+    .sheet.cover {
+      border-left-width: 1px;
+      border-left-color: rgba(0, 0, 0, 0.06);
+      background: var(--sheet-bg);
     }
 
     .card {
@@ -319,6 +432,30 @@ export function renderReportHtml(data) {
       background: var(--pill-bg);
       font-size: 0.82rem;
       font-weight: 500;
+    }
+
+    .pill--open {
+      background: var(--st-open-soft);
+      color: var(--st-open);
+      font-weight: 650;
+    }
+
+    .pill--pending {
+      background: var(--st-pending-soft);
+      color: var(--st-pending);
+      font-weight: 650;
+    }
+
+    .pill--resolved {
+      background: var(--st-resolved-soft);
+      color: var(--st-resolved);
+      font-weight: 650;
+    }
+
+    .pill--unknown {
+      background: var(--st-unknown-soft);
+      color: var(--st-unknown);
+      font-weight: 650;
     }
 
     .block {
