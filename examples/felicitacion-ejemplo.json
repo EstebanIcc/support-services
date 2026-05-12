@@ -1,0 +1,141 @@
+{
+  "resultado_ticket": {
+    "data_soporte": {
+      "Kenneth Segovia": {
+        "cantidad_tickets": 22,
+        "porcentaje": "47.83%",
+        "tickets": [
+          18403,
+          18407,
+          18402,
+          18406,
+          18404,
+          18405,
+          18411,
+          18410,
+          18401,
+          18426,
+          18433,
+          18413,
+          18409,
+          18408,
+          18429,
+          18430,
+          18431,
+          18432,
+          18458,
+          18459,
+          18460,
+          18461
+        ]
+      },
+      "Daniela Useche": {
+        "cantidad_tickets": 23,
+        "porcentaje": "50.00%",
+        "tickets": [
+          18419,
+          18418,
+          18415,
+          18414,
+          18420,
+          18421,
+          18423,
+          18422,
+          18424,
+          18437,
+          18438,
+          18447,
+          18452,
+          18453,
+          18457,
+          18451,
+          18454,
+          18455,
+          18456,
+          18417,
+          18449,
+          18416,
+          18439
+        ]
+      },
+      "Eliezer Espinal": {
+        "cantidad_tickets": 1,
+        "porcentaje": "2.17%",
+        "tickets": [18434]
+      }
+    },
+    "total_tickets": 46
+  },
+  "resultado_pma": {
+    "data_soporte": {
+      "Jean Gamez": {
+        "cantidad_tickets": 18,
+        "porcentaje": "40.00%",
+        "tickets": [
+          "TSWA1214",
+          "TSWA1210",
+          "TSW1213",
+          "TSW1211",
+          "TSW1215",
+          "TSWA1212",
+          "TSWA1216",
+          "TSWA1224",
+          "TSWA1222",
+          "TSW1258",
+          "TSWA1259",
+          "TSW1262",
+          "TSWA1266",
+          "TSWA1260",
+          "TSW1265",
+          "TSWA1263",
+          "TSWA1261",
+          "TSWA1273"
+        ]
+      },
+      "Kenneth Segovia": {
+        "cantidad_tickets": 9,
+        "porcentaje": "20.00%",
+        "tickets": [
+          "TSW1207",
+          "TSW1204",
+          "TSWA1220",
+          "TSWA1217",
+          "TSW1232",
+          "TSWA1226",
+          "TSW1236",
+          "TSWA1234",
+          "TSW1233"
+        ]
+      },
+      "Vanessa Noboa": {
+        "cantidad_tickets": 17,
+        "porcentaje": "37.78%",
+        "tickets": [
+          "TSW1243",
+          "TSWA1244",
+          "TSW1242",
+          "TSWA1249",
+          "TSWA1251",
+          "TSW1246",
+          "TSWA1247",
+          "TSWA1245",
+          "TSWA1250",
+          "TSW1254",
+          "TSWA1252",
+          "TSW1257",
+          "TSWA1253",
+          "TSWA1255",
+          "TSW1271",
+          "TSW1269",
+          "TSW1256"
+        ]
+      },
+      "Eliezer Espinal": {
+        "cantidad_tickets": 1,
+        "porcentaje": "2.22%",
+        "tickets": ["TSWA1241"]
+      }
+    },
+    "total_tickets": 45
+  }
+}
