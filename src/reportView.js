@@ -100,6 +100,7 @@ export function renderReportHtml(data) {
             <dt>ID soporte</dt><dd><code>${escapeHtml(supportTicketId)}</code></dd>
             <dt>Estado</dt><dd><span class="pill pill--${st}">${escapeHtml(t.status || "—")}</span></dd>
             <dt>Compañía</dt><dd>${escapeHtml(t.company || "—")}</dd>
+            <dt>Escalado</dt><dd>${escapeHtml(t.escalado || "—")}</dd>
             <dt>Asignado a</dt><dd>${escapeHtml(t.assignedTo || "—")}</dd>
             <dt>Usuario</dt><dd>${escapeHtml(t.usuario || "—")}</dd>
             <dt>Creado</dt><dd>${escapeHtml(t.createdAt || "—")}</dd>

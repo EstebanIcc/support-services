@@ -40,6 +40,16 @@ function companyFromDbRow(row) {
 }
 
 /**
+ * @param {Record<string, unknown>} row
+ */
+function escaladoFromDbRow(row) {
+  if (!row || typeof row !== "object") return "";
+  const raw = row["Escalado/Task"] ?? "";
+  if (raw == null) return "";
+  return typeof raw === "string" ? raw : String(raw);
+}
+
+/**
  * @param {any} elemento Primer elemento del grupo
  */
 export function mapToTicketSummary(elemento) {
@@ -102,6 +112,7 @@ export async function runEnrichmentPipeline(config, query) {
       let resumen = "";
       let resolucion = "";
       let company = "";
+      let escalado = "";
 
       if (ticketNum != null) {
         try {
@@ -112,6 +123,7 @@ export async function runEnrichmentPipeline(config, query) {
             resumen = first.Resumen_de_Caso ?? "";
             resolucion = first.Resolucion ?? "";
             company = companyFromDbRow(first);
+            escalado = escaladoFromDbRow(first);
           }
         } catch (e) {
           base._databaseError =
@@ -124,6 +136,7 @@ export async function runEnrichmentPipeline(config, query) {
         {
           ...base,
           company,
+          escalado,
           Resumen_de_Caso: resumen,
           Resolucion: resolucion,
         },
