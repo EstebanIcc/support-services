@@ -2,6 +2,7 @@ import express from "express";
 import { loadConfig } from "./config.js";
 import { runEnrichmentPipeline } from "./pipeline.js";
 import { renderReportHtml } from "./reportView.js";
+import { listCalendarEvents } from "./calendar/calendarService.js";
 
 const config = loadConfig();
 const app = express();
@@ -32,6 +33,22 @@ app.get("/api/casos/consolidados", async (req, res) => {
  * GET /vista/casos
  * Misma query que /api/casos/consolidados (sin filtro por status); HTML listo para compartir.
  */
+/**
+ * GET /api/calendar/eventos
+ * Query: days (default 7), date (inicio YYYY-MM-DD, default hoy), limit.
+ * Eventos desde hoy hasta N días, agrupados por attendee.
+ */
+app.get("/api/calendar/eventos", async (req, res) => {
+  try {
+    const data = await listCalendarEvents(config, req.query);
+    res.json(data);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const status = message.includes("Falta variable") ? 500 : 502;
+    res.status(status).json({ error: message });
+  }
+});
+
 app.get("/vista/casos", async (req, res) => {
   try {
     const data = await runEnrichmentPipeline(config, req.query);
@@ -53,5 +70,6 @@ app.get("/vista/casos", async (req, res) => {
 app.listen(config.port, () => {
   console.log(`Servidor en http://localhost:${config.port}`);
   console.log(`  GET /api/casos/consolidados`);
+  console.log(`  GET /api/calendar/eventos`);
   console.log(`  GET /vista/casos`);
 });

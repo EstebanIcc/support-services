@@ -19,6 +19,12 @@ export function loadConfig() {
       "9e84df74-0dc2-4fcf-9308-cd4257f7d978",
     databaseId: process.env.DATABASE_ID ?? "5372",
     timezone: process.env.JELOU_TIMEZONE ?? "America/Guayaquil",
+    googleServiceAccountKeyPath: process.env.GOOGLE_SERVICE_ACCOUNT_KEY_PATH,
+    googleServiceAccountKey: process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
+    googleCalendarId: process.env.GOOGLE_CALENDAR_ID,
+    calendarAttendeesFilterPath:
+      process.env.CALENDAR_ATTENDEES_FILTER_PATH ??
+      "./src/calendar/attendeesFilter.json",
   };
 }
 

@@ -1,0 +1,36 @@
+{
+  "attendees": [
+    {
+      "email": "esteban@jelou.ai",
+      "idSlack": "U02BUTJFRT8"
+    },
+    {
+      "email": "gema.giler@jelou.ai",
+      "idSlack": "U0B2XBKTKGV"
+    },
+    {
+      "email": "jean.gamez@jelou.ai",
+      "idSlack": "U063E4J77R6"
+    },
+    {
+      "email": "karen.useche@jelou.ai",
+      "idSlack": "U063E4J77R6"
+    },
+    {
+      "email": "katherine.noboa@jelou.ai",
+      "idSlack": "U063E4J77R6"
+    },
+    {
+      "email": "lenin@jelou.ai",
+      "idSlack": "U063E4J77R6"
+    },
+    {
+      "email": "maria.lopez@jelou.ai",
+      "idSlack": "U063E4J77R6"
+    },
+    {
+      "email": "matias.villacis@jelou.ai",
+      "idSlack": "U063E4J77R6"
+    }
+  ]
+}
