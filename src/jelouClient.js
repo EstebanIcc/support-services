@@ -1,4 +1,4 @@
-const GATEWAY_BASE = "http://gateway.jelou.ai/jelouapi/v1";
+const GATEWAY_BASE = "http://gateway.jelou.ai/platform/v1";
 const API_BASE = "https://api.jelou.ai/v2";
 
 /**
